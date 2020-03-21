@@ -84,7 +84,7 @@ for i in range(n_steps):
     if i % display_step == 0:
         logit, pred = logistic_regression(x_np)
         loss = cross_entropy(pred, y_np)
-        acc = accuracy(pred, y_np)
+        acc = accuracy_score(pred, y_np)
         print("step: %i, loss: %f, accuracy: %f" % (i, loss, acc))
 
 
