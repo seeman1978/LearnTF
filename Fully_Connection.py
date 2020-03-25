@@ -31,3 +31,5 @@ if __name__ == "__main__":
     model.fit(train_X, train_y, batch_size=100, epochs=5)
 
     model.evaluate(valid_X, valid_y, verbose=2)
+
+    model.evaluate(test_X, test_y, verbose=2)
