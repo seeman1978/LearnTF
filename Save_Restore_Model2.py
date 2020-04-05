@@ -1,6 +1,6 @@
 """
 Save and Restore a model using TensorFlow v2. In this example, we will go over high approaches:
-High-level: TF Module/Model saver..
+High-level: TF Module/Model saver.
 """
 
 from __future__ import absolute_import, division, print_function
