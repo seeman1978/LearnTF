@@ -106,8 +106,10 @@ if __name__ == "__main__":
         test_loss.reset_states()
         test_accuracy.reset_states()
 
-        for images, labels in train_db:
+        for step, (images, labels) in enumerate(train_db):
             train_step(images, labels)
+            if step % 100 == 0:
+                print(epoch, step, 'loss:', float(train_loss.result()))
 
         for test_images, test_labels in test_db:
             test_step(test_images, test_labels)
