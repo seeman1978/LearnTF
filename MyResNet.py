@@ -21,7 +21,7 @@ class BasicBlock(layers.Layer):
         else:   # shape匹配，直接短接
             self.downsample = lambda x : x
 
-    def call(self, inputs, training=None):
+    def call(self, inputs):
         # [b, h, w, c]，通过第一个卷积单元
         _ = self.conv1(inputs)
         _ = self.bn1(_)
@@ -38,15 +38,16 @@ class BasicBlock(layers.Layer):
         _ = layers.add([_, identity])
         return tf.nn.relu(_)
 
-class ResBlock(layers.Layer):
+class ResBlock(keras.Model):
     def __init__(self, filter_num, blocks, stride=1):
+        super(ResBlock, self).__init__()
         self.res_blocks = keras.Sequential()
         # 只有第一个BasicBlock的步长可能不为1，实现下采样
         self.res_blocks.add(BasicBlock(filter_num, stride))
         for _ in range(1, blocks):#其他BasicBlock步长都为1
             self.res_blocks.add(BasicBlock(filter_num, stride=1))
 
-    def call(self, inputs, training=None):
+    def call(self, inputs):
         return self.res_blocks(inputs)
 
 class ResNet(keras.Model):
@@ -73,7 +74,7 @@ class ResNet(keras.Model):
         # 最后连接一个全连接层分类
         self.fc = layers.Dense(num_classes)
 
-    def call(self, inputs, training=None, mask=None):
+    def call(self, inputs):
         # 通过根网络
         _ = self.stem(inputs)
         # 一次通过4个模块
@@ -89,7 +90,6 @@ def resnet18():
     # 通过调整模块内部BasicBlock的数量和配置实现不同的ResNet
     return ResNet([2, 2, 2, 2])
 
-@tf.function
 def train_step(images, labels):
   with tf.GradientTape() as tape:
     # training=True is only needed if there are layers with different
@@ -102,7 +102,6 @@ def train_step(images, labels):
   train_loss(loss)
   train_accuracy(labels, predictions)
 
-@tf.function
 def test_step(images, labels):
   # training=False is only needed if there are layers with different
   # behavior during training versus inference (e.g. Dropout).
