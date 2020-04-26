@@ -50,7 +50,7 @@ if __name__ == "__main__" :
     # 训练
     model.compile(loss=keras.losses.categorical_crossentropy,
                   optimizer=keras.optimizers.Adam(), metrics=['accuracy'])
-    history = model.fit(np.expand_dims(x_train, -1), y_train, batch_size=128, epochs=12, validation_split=0.3)
+    history = model.fit(np.expand_dims(x_train, -1), y_train, batch_size=32, epochs=12, validation_split=0.3)
 
     loss, accuracy = model.evaluate(np.expand_dims(x_test, -1), y_test, verbose=0)
     print(loss, accuracy)
