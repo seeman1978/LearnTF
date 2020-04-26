@@ -72,6 +72,18 @@ def test_step(images, labels):
   test_accuracy(labels, predictions)
 
 if __name__ == "__main__":
+    # 获取所有GPU 设备列表
+    gpus = tf.config.experimental.list_physical_devices('GPU')
+    if gpus:
+        try:
+            # 设置GPU 显存占用为按需分配
+            for gpu in gpus:
+                tf.config.experimental.set_memory_growth(gpu, True)
+            logical_gpus = tf.config.experimental.list_logical_devices('GPU')
+            print(len(gpus), "Physical GPUs,", len(logical_gpus), "Logical GPUs")
+        except RuntimeError as e:
+            # 异常处理
+            print(e)
     (x_train, y_train), (x_test, y_test) = keras.datasets.cifar10.load_data()
 
     x_train = 2 * x_train.astype('float32') / 255. - 1
@@ -81,9 +93,9 @@ if __name__ == "__main__":
 
     # 构建训练集对象
     train_db = tf.data.Dataset.from_tensor_slices((x_train, y_train))
-    train_db = train_db.shuffle(1000).batch(128)  # preprocess把数据预处理到[-1，1]区间
+    train_db = train_db.shuffle(1000).batch(32)  # preprocess把数据预处理到[-1，1]区间
     test_db = tf.data.Dataset.from_tensor_slices((x_test, y_test))
-    test_db = test_db.batch(64)
+    test_db = test_db.batch(32)
 
     # create model
     myvgg = VGG_Model()
